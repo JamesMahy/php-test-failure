@@ -28,6 +28,10 @@ class Bootstrap {
 		
 		if(!empty($name)){
 			if(is_file($filePath)){
+				if(isset($this->instances[$name])){
+					$obj = $this->instances[$name];
+				}
+				
 				if($isUnique || !isset($this->instances[$name])){
 					// require the requested file
 					require_once $filePath;
@@ -41,7 +45,7 @@ class Bootstrap {
 				}
 				return $obj;
 			}
-			throw new \Exception("Could not find file for class ".$name."");
+			throw new \Exception("Could not find file ".$filePath." for class ".$name."");
 		}
 		throw new \Exception("Class ".$name." does not exist");
 	}
