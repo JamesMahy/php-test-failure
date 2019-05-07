@@ -15,11 +15,20 @@ class DisplayEngine extends Framework
 	private $templatePath = "";
 	public function __construct()
 	{
+		// to reduce code use
 		$this->templatePath = $this->make("\HMPP\Core\Config")->get("app_path") . "assets/templates/";
 	}
 	
+	/***
+	 * Build a string from a supplied template and arguments passed.
+	 * @param String $name
+	 * @param array $args
+	 * @return bool|mixed|string
+	 * @throws \Exception
+	 */
 	public function build(String $name, Array $args=array()){
-		$filePath = $this->templatePath . $name;
+		$filePath = preg_replace("/[^A-Z0-9\/\\\\][tpl]+/i","",$this->templatePath . $name).".tpl";
+		
 		if(is_file($filePath)){
 			$templateContents = file_get_contents($filePath);
 			$replaceFrom = array();
@@ -40,6 +49,13 @@ class DisplayEngine extends Framework
 			return $templateContents;
 			
 		}
-		throw new \Exception("Template file not found");
+		throw new \Exception("Template file ".$filePath . " not found");
+	}
+	
+	public function output(String $output, String $title = "", Bool $bootstrap=true){
+		$output = ($bootstrap ? $this->build("bootstrap.tpl", array("title" => $title, "body" => $output)) : $output);
+		echo $output;
+		
+		return $output;
 	}
 }

@@ -13,12 +13,18 @@ $bootstrap = \HMPP\Bootstrap::getInstance();
 $bootstrap->make('\HMPP\Core\Config')->init();
 
 class Index extends \HMPP\Core\Framework {
-	public function index(){
-		return $this->make("\HMPP\Core\DisplayEngine")->build("index.tpl", ["something" => "world"]);
+	public function main(){
+		
+		$engine = $this->make("\HMPP\Core\DisplayEngine");
+		
+		$engine->output(
+				$engine->build("index.tpl", ["something" => "world"]),
+				"Some Title"
+		);
 	}
 }
 // Launch index
-echo (new Index($bootstrap))->index();
+(new Index($bootstrap))->main();
 
 
 
