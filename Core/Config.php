@@ -8,13 +8,16 @@
 
 namespace HMPP\Core;
 
-
 class Config
 {
 	private $configFile = __DIR__."../config.json";
 	private $configFileRaw = "";
 	private $config = null;
 	
+	/***
+	 * Config constructor, added to allow for proper unit testing.
+	 * @param String $rawJsonData only passed by unit test
+	 */
 	public function __construct(String $rawJsonData=""){
 		
 		if(!empty($rawJsonData)){
@@ -24,8 +27,13 @@ class Config
 		}
 	}
 	
+	/***
+	 * Initializes the config instance, parses the JSON in ../config.json
+	 * and throws and exception if there is something wrong
+	 * @throws \Exception
+	 */
 	public function init(){
-		$jsonParsed = json_decode();
+		$jsonParsed = json_decode($this->configFileRaw);
 		
 		if(empty($jsonParsed) || !is_array($jsonParsed)){
 			throw new \Exception("config.json empty or corrupted",1);
@@ -33,6 +41,15 @@ class Config
 		$this->config = $jsonParsed;
 	}
 	
+	/***
+	 * Get's the value of the provided namespace and config name
+	 * throws an exception if it can't find the requested value.
+	 *
+	 * @param String $namespace eg "stations"
+	 * @param String $name eg "Holborn"
+	 * @return mixed
+	 * @throws \Exception
+	 */
 	public function get(String $namespace="", String $name=""){
 		$exceptionText = $name." could not be found in config.json";
 		if(empty($namespace)){

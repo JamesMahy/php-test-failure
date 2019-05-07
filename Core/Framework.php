@@ -18,6 +18,14 @@ class Framework
 		$this->bootstrap = $bootstrap;
 	}
 	
+	/***
+	 * Mirror of HMPP\Bootstrap method, this is to maintain code readability
+	 * @param String $name
+	 * @param array|null $args
+	 * @param bool $isUnique
+	 * @return mixed
+	 * @throws \Exception
+	 */
 	public function getInstance(String $name="", Array $args=null, Bool $isUnique = false){
 		return $this->bootstrap->getInstance($name,$args,$isUnique);
 	}
