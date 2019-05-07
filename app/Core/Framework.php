@@ -8,16 +8,8 @@
 
 namespace HMPP\Core;
 
-
-use HMPP\Bootstrap;
-
 class Framework
 {
-	private $bootstrap = null;
-	public function __construct(Bootstrap $bootstrap){
-		$this->bootstrap = $bootstrap;
-	}
-	
 	/***
 	 * Mirror of HMPP\Bootstrap method, this is to maintain code readability
 	 * @param String $name
@@ -27,6 +19,6 @@ class Framework
 	 * @throws \Exception
 	 */
 	public function make(String $name="", Array $args=null, Bool $isUnique = false){
-		return $this->bootstrap->getInstance($name,$args,$isUnique);
+		return \HMPP\Bootstrap::getInstance()->make($name,$args,$isUnique);
 	}
 }
