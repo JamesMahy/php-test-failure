@@ -9,14 +9,16 @@
 /* Bootstrap framework */
 require_once '../Bootstrap.php';
 
-$bootstrap = new \HMPP\Bootstrap();
-$bootstrap->getInstance("\HMPP\Core\Config")->init();
+$bootstrap = \HMPP\Bootstrap::getInstance();
+$bootstrap->make('\HMPP\Core\Config')->init();
 
 class Index extends \HMPP\Core\Framework {
-
+	public function index(){
+		return "hello world!";
+	}
 }
 // Launch index
-new Index($bootstrap);
+echo (new Index($bootstrap))->index();
 
 
 

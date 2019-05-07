@@ -10,7 +10,7 @@ namespace HMPP\Core;
 
 class Config
 {
-	private $configFile = __DIR__."../config.json";
+	private $configFile = __DIR__."/../config.json";
 	private $configFileRaw = "";
 	private $config = null;
 	
@@ -20,7 +20,7 @@ class Config
 	 */
 	public function __construct(String $rawJsonData=""){
 		
-		if(!empty($rawJsonData)){
+		if(empty($rawJsonData)){
 			$this->configFileRaw = file_get_contents($this->configFile);
 		}else{
 			$this->configFileRaw = $rawJsonData;
@@ -33,10 +33,10 @@ class Config
 	 * @throws \Exception
 	 */
 	public function init(){
-		$jsonParsed = json_decode($this->configFileRaw);
+		$jsonParsed = json_decode($this->configFileRaw, true);
 		
 		if(empty($jsonParsed) || !is_array($jsonParsed)){
-			throw new \Exception("config.json empty or corrupted",1);
+			throw new \Exception("config.json empty or corrupted");
 		}
 		$this->config = $jsonParsed;
 	}

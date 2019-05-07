@@ -26,7 +26,7 @@ class Framework
 	 * @return mixed
 	 * @throws \Exception
 	 */
-	public function getInstance(String $name="", Array $args=null, Bool $isUnique = false){
+	public function make(String $name="", Array $args=null, Bool $isUnique = false){
 		return $this->bootstrap->getInstance($name,$args,$isUnique);
 	}
 }

@@ -1,10 +1,13 @@
 <?php
-
 namespace HMPP;
+use HMPP\Core\Traits\Singleton;
+
+require_once 'Core/Traits/Singleton.php';
+require_once 'Core/Framework.php';
 
 class Bootstrap {
 	/* Singleton to ensure other processes can't create a memory leak by declaring multiple instances */
-	use HMPP\Core\Singleton;
+	use Singleton;
 	
 	private $instances = array();
 	
@@ -18,22 +21,27 @@ class Bootstrap {
 	 * @return mixed
 	 * @throws \Exception
 	 */
-	public function getInstance(String $name="", Array $args=null, Bool $isUnique = false){
+	public function make(String $name="", Array $args=null, Bool $isUnique = false){
 		// Prevent any directory injection incase someone hasn't santised user inputs.
-		$name = str_ireplace("HMPP/","",preg_replace("/[^A-Za-z0-9\/]+",""));
-		if(!empty($name) && is_file($name)){
-			if($isUnique || !isset($this->instances[$name])){
-				// require the requested file
-				require_once $name;
-				$obj = new $name();
-				
-				if(!$isUnique){
-					/* if we're not creating a new object, store the instance for future retrival
-					and to prevent singletons everywhere.*/
-					$this->instances[$name] = $obj;
+		$name = preg_replace("/[^A-Z0-9\/\\\\]+/i","",$name);
+		$filePath = __DIR__ . "/" . str_ireplace(array("\HMPP\\","\\"),array("","/"),$name)  . ".php";
+		
+		if(!empty($name)){
+			if(is_file($filePath)){
+				if($isUnique || !isset($this->instances[$name])){
+					// require the requested file
+					require_once $filePath;
+					$obj = new $name();
+					
+					if(!$isUnique){
+						/* if we're not creating a new object, store the instance for future retrival
+						and to prevent singletons everywhere.*/
+						$this->instances[$name] = $obj;
+					}
 				}
+				return $obj;
 			}
-			return $obj;
+			throw new \Exception("Could not find file for class ".$name."");
 		}
 		throw new \Exception("Class ".$name." does not exist");
 	}
