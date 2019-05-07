@@ -1,0 +1,17 @@
+{
+  "max_fare" : 3.20,
+  "stations": {
+    "Holborn" : [1],
+    "Earl's Court" : [1,2],
+    "Wimbledon" : [3],
+    "Hammersmith" : [2]
+  },
+  "zone_fares" : {
+    "zone_1" : 2.50,
+    "outside_zone_1" : 2.00,
+    "two_zones_inc_zone_1" : 3.00,
+    "two_zones_exc_zone_1" : 2.25,
+    "three_zones" : 3.20,
+    "bus" : 1.80
+  }
+}
