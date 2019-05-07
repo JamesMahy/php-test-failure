@@ -50,15 +50,13 @@ class Config
 	 * @return mixed
 	 * @throws \Exception
 	 */
-	public function get(String $namespace="", String $name=""){
+	public function get(String $name=""){
 		$exceptionText = $name." could not be found in config.json";
-		if(empty($namespace)){
-			if(isset($this->config[$name])){
-				return $this->config[$name];
-			}
-			throw new \Exception($exceptionText);
+		
+		if(isset($this->config[$name])){
+			return $this->config[$name];
 		}
-		throw new \Exception($namespace."/".$exceptionText);
+		throw new \Exception($exceptionText);
 	}
 	
 }

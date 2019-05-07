@@ -1,4 +1,5 @@
 {
+  "app_path" : "/var/www/",
   "max_fare" : 3.20,
   "stations": {
     "Holborn" : [1],

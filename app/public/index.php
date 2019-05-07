@@ -14,7 +14,7 @@ $bootstrap->make('\HMPP\Core\Config')->init();
 
 class Index extends \HMPP\Core\Framework {
 	public function index(){
-		return "hello world!";
+		return $this->make("\HMPP\Core\DisplayEngine")->build("index.tpl", ["something" => "world"]);
 	}
 }
 // Launch index
