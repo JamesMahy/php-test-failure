@@ -51,12 +51,19 @@ class Config
 	 * @throws \Exception
 	 */
 	public function get(String $name=""){
-		$exceptionText = $name." could not be found in config.json";
-		
 		if(isset($this->config[$name])){
 			return $this->config[$name];
 		}
-		throw new \Exception($exceptionText);
+		
+		// We need to split anyway if successful and sizeof is cheaper than a string search
+		$split = explode("\\",$name);
+		if(sizeof($split) > 1){
+			if(isset($this->config[$split[0]]) && isset($this->config[$split[0]][$split[1]])){
+				return $this->config[$split[0]][$split[1]];
+			}
+		}
+		
+		throw new \Exception($name." could not be found in config.json");
 	}
 	
 }
