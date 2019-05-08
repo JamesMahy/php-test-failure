@@ -17,7 +17,7 @@ interface ModelInterface
 	 * @param array $data
 	 * @return mixed
 	 */
-	public function set(Int $id = 0, Array $data = array());
+	public function set(Array $data = array(), Int $id = 0);
 	
 	/***
 	 * Gets the requested data from the datastore
