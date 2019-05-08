@@ -1,1 +1,1 @@
-<option value="{{id}}" route-data="{{routes}}">{{name}}</option>
+<option value="{{id}}" route-data="{{routes}}" {{selected}}>{{name}}</option>
