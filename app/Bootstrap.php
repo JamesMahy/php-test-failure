@@ -2,6 +2,8 @@
 namespace HMPP;
 use HMPP\Core\Traits\Singleton;
 
+session_start();
+
 require_once 'Core/Traits/Singleton.php';
 require_once 'Core/Framework.php';
 
@@ -10,6 +12,42 @@ class Bootstrap {
 	use Singleton;
 	
 	private $instances = array();
+	
+	public function __construct(){
+		$this->createSPLRegister();
+	}
+	
+	/***
+	 * Cleans the class name to protect against user input injection
+	 * @param String $name
+	 * @return null|string|string[]
+	 */
+	private function cleanClassName(String $name=""){
+		return preg_replace("/[^A-Z0-9\/\\\\]+/i","",$name);
+	}
+	
+	/***
+	 * Gets the file path based on the provided class name
+	 * @param String $name
+	 * @return string
+	 */
+	private function getFilePathFromCleanClassName(String $name=""){
+		return __DIR__ . "/" . str_ireplace(array("\HMPP\\","HMPP\\","\\"),array("","","/"),$name)  . ".php";
+	}
+	
+	/***
+	 * Basic dependency injection
+	 */
+	private function createSPLRegister(){
+		spl_autoload_register(function($name){
+			$filePath = $this->getFilePathFromCleanClassName(
+					$this->cleanClassName($name)
+			);
+			if(is_file($filePath)){
+				require_once $filePath;
+			}
+		});
+	}
 	
 	/***
 	 * Retrieves an instance of the provided fully qualified class name,
@@ -23,8 +61,8 @@ class Bootstrap {
 	 */
 	public function make(String $name="", Array $args=null, Bool $isUnique = false){
 		// Prevent any directory injection incase someone hasn't santised user inputs.
-		$name = preg_replace("/[^A-Z0-9\/\\\\]+/i","",$name);
-		$filePath = __DIR__ . "/" . str_ireplace(array("\HMPP\\","\\"),array("","/"),$name)  . ".php";
+		$name = $this->cleanClassName($name);
+		$filePath = $this->getFilePathFromCleanClassName($name);
 		
 		if(!empty($name)){
 			if(is_file($filePath)){
