@@ -1,7 +1,7 @@
 {
   "app_path" : "/var/www/",
   "max_fare" : 3.20,
-  "stations": {
+  "destinations": {
     "Holborn" : [1],
     "Earl's Court" : [1,2],
     "Wimbledon" : [3],
