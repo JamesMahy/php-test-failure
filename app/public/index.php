@@ -14,10 +14,13 @@ $bootstrap->make('\HMPP\Core\Config')->init();
 
 class Index extends \HMPP\Core\Framework {
 	public function main(){
+		
 		$model = $this->make("\HMPP\Models\JourneyModel");
 		
+		// The post handler
 		if(isset($_POST) && !empty($_POST)){
 			if(isset($_POST['topup_amount'])){
+				// Handles topups
 				try{
 					$amount = floatval($_POST['topup_amount']);
 					
@@ -31,6 +34,7 @@ class Index extends \HMPP\Core\Framework {
 					$error = $e->getMessage();
 				}
 			}else{
+				// Handles the Journey
 				try{
 					$journeyData = $this->handleJourney($_POST);
 					return 	Header("Location: /?message=Welcome to ".$journeyData['to']."&".http_build_query($_POST));
@@ -38,15 +42,16 @@ class Index extends \HMPP\Core\Framework {
 					$error = $e->getMessage();
 				}
 			}
-			
 		}
 		
 		$engine = $this->make("\HMPP\Core\DisplayEngine");
 		
+		// Gets available destinations;
 		$destinationArray = $this->make("\HMPP\Core\Config")->get("destinations");
 		$fromCompiled = "";
 		$toCompiled = "";
 		
+		// If we've visited anywhere, we want to keep track for UX
 		$todaysDestinations = $model->getAllBy("date",date("Y-m-d"));
 		$lastDestination = null;
 		if(!empty($todaysDestinations)){
@@ -54,6 +59,7 @@ class Index extends \HMPP\Core\Framework {
 		}
 		
 		$selectedString = "selected=\"selected\"";
+		// Creates the dropdown lists and selects the correct item if there is an error
 		foreach($destinationArray as $destination => $routes){
 			
 			$fromSelected = "";
@@ -72,6 +78,7 @@ class Index extends \HMPP\Core\Framework {
 					}
 				}
 			}else{
+				// If we last travelled somewhere, may as well start there!
 				if(!empty($lastDestination)){
 					if($lastDestination['to'] == $destination){
 						$fromSelected = $selectedString;
@@ -81,8 +88,6 @@ class Index extends \HMPP\Core\Framework {
 					}
 				}
 			}
-			
-			
 			
 			$fromCompiled .= $engine->build("items/destination.tpl",[
 					"id" => $destination,
@@ -99,8 +104,8 @@ class Index extends \HMPP\Core\Framework {
 			]);
 		}
 		
+		// Have we been passed any messages to parse and display?
 		$messageString = "";
-		
 		if(isset($_REQUEST['message'])){
 			// Using htmlentities to ensure it can't be used for injection
 			$message = htmlentities(urldecode($_REQUEST['message']));
@@ -110,6 +115,7 @@ class Index extends \HMPP\Core\Framework {
 			$messageString .= $engine->build("items/error.tpl",["error" => $error]);
 		}
 		
+		// Output the display
 		$engine->output(
 				$engine->build("index.tpl",
 					[
