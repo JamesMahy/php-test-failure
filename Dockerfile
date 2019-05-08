@@ -1,5 +1,5 @@
 # Dockerfile
-FROM nimmis/apache-php7
+FROM mattrayner/lamp:latest-1804
 
 MAINTAINER James Mahy <james.mahy@cevo.co.uk>
 
