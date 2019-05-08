@@ -71,41 +71,51 @@ class JourneyModel extends SessionModel {
 			}
 			else if($start == $finish){
 				throw new \Exception("You can't travel to the same location silly");
-			}else{
+			}else {
 				$journeyData['from'] = $data['destination_from'];
 				$journeyData['to'] = $data['destination_to'];
 				
-				$from = $config->get("destinations\\".$start);
-				$to = $config->get("destinations\\".$finish);
+				$from = $config->get("destinations\\" . $start);
+				$to = $config->get("destinations\\" . $finish);
 				
-				$zones = [];
+				$zones = array_merge($from, $to);
+				sort($zones);
 				
-				foreach($from as $route){
-					if(in_array($route,$to)){
-						$zones[] = $route;
-						break;
+				
+				$minFrom = min($from);
+				$minTo = min($to);
+				
+				$maxFrom = max($from);
+				$maxTo = max($to);
+				
+				$numberOfZones = 0;
+				
+				if ($minFrom != 1 || $minTo != 1){
+					if ($maxFrom > $maxTo) {
+						$numberOfZones = $maxFrom - $maxTo;
+					} elseif ($maxFrom < $maxTo) {
+						$numberOfZones = $maxTo - $maxFrom;
 					}
 				}
-				if(empty($zones)){$zones = array_merge($from,$to);}
 				
-				sort($zones);
-				$numberOfZones = sizeof($zones);
+				$numberOfZones++;
+				
 				if($numberOfZones){
 					if($numberOfZones == 1){
-						if($zones[0] == 1){
+						if($minFrom == 1 && $minTo == 1){
 							$fare = $config->get("zone_fares\\zone_1");
 						}else{
 							$fare = $config->get("zone_fares\\outside_zone_1");
 						}
 					}
 					else if($numberOfZones == 2){
-						if($zones[0] == 1){
+						if($minFrom == 1 || $minTo == 1){
 							$fare = $config->get("zone_fares\\two_zones_inc_zone_1");
 						}else{
-							$fare = $config->get("max_fare");
+							$fare = $config->get("zone_fares\\two_zones_exc_zone_1");
 						}
 					}else{
-						$fare = $config->get("zone_fares\\three_zones");
+						$fare = $config->get("max_fare");
 					}
 				}
 			}
